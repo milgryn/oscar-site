@@ -236,7 +236,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: 
         <div>
           <span class="eyebrow">Guide d'utilisation · OSCAR 1.0</span>
           <h1 aria-label="Le guide complet, pas à pas" style="margin-top:16px"><span class="line" aria-hidden="true"><span>Le guide complet,</span></span><span class="line" aria-hidden="true"><span>pas à pas</span></span></h1>
-          <p class="lede">20 parcours pour prendre OSCAR en main, de l'installation à la routine du soir. Chaque étape cite les boutons tels qu'ils apparaissent à l'écran. Cochez les étapes au fur et à mesure : votre progression reste enregistrée dans ce navigateur.</p>
+          <p class="lede">21 parcours pour prendre OSCAR en main, de l'installation à la routine du soir. Chaque étape cite les boutons tels qu'ils apparaissent à l'écran. Cochez les étapes au fur et à mesure : votre progression reste enregistrée dans ce navigateur.</p>
         </div>
         <div class="meter" aria-label="Votre progression">
           <div class="row"><span class="muted">Votre progression</span><span class="big" id="pct">0 %</span></div>
@@ -480,6 +480,18 @@ const GUIDE = [
       { t: "Installer au bon moment", d: "Choisissez un moment calme (avant l'ouverture, après la fermeture) puis [[Installer et redémarrer]] et saisissez votre code PIN.", warn: "Seuls les profils autorisés à modifier les paramètres (patron, responsable) peuvent installer. Les autres voient le bouton mais doivent prévenir un responsable." },
       { t: "Ce qui se passe pendant l'installation", d: "Dans l'ordre, sans action de votre part :", list: ["OSCAR crée une sauvegarde vérifiée de vos données (« Avant mise à jour ») ;", "il télécharge la nouvelle version et vérifie sa signature : seul un fichier publié par l'éditeur d'OSCAR est accepté ;", "il installe la version, puis redémarre tout seul."] },
       { t: "Vérifier après le redémarrage", where: "Paramètres › À propos et Sauvegardes", d: "La nouvelle version est indiquée dans Paramètres › À propos. La sauvegarde « Avant mise à jour » figure dans la liste des sauvegardes : en cas de souci, elle permet de revenir à l'état d'avant." },
+    ],
+  },
+  {
+    id: "mobile", title: "OSCAR sur téléphone", right: "Modification des paramètres (appairage)", img: "tableau-de-bord", alt: "Tableau de bord d'OSCAR, dont le résumé est envoyé au téléphone",
+    intro: "Suivez la boutique à distance sur iPhone ou Android : chiffres du jour, stocks et DLC, pertes à valider, suggestions de commande, questions à Oscar. Les données sont chiffrées de bout en bout.",
+    steps: [
+      { t: "Afficher le QR code sur le PC", where: "Paramètres › Mobile", d: "Cliquez sur [[Afficher l'appairage]] (code PIN demandé), puis [[Appairer un téléphone]]. Un QR code et un code de 32 caractères s'affichent." },
+      { t: "Scanner avec le téléphone", d: "Ouvrez l'appareil photo du téléphone, visez le QR code et touchez le lien : OSCAR Mobile s'ouvre et s'appaire tout seul.", tip: "Vous pouvez aussi ouvrir milgryn.github.io/oscar-site/mobile/ et saisir le code à la main." },
+      { t: "Installer l'application", d: "iPhone : bouton Partager puis « Sur l'écran d'accueil ». Android : menu ⋮ puis « Installer l'application ». L'icône OSCAR apparaît comme une application.", warn: "Sur iPhone, l'application installée ne reprend pas l'appairage fait dans Safari : ouvrez-la depuis l'écran d'accueil et saisissez le code une fois." },
+      { t: "Consulter la boutique", d: "Accueil (chiffres du jour et du mois, message d'Oscar, à préparer, points inhabituels), Stocks (DLC dépassées ou proches, ruptures), Commandes, Pertes, Oscar. En haut, l'heure du dernier envoi du PC.", tip: "Le PC envoie un résumé dès qu'une donnée change, au plus tard toutes les 15 minutes, tant qu'OSCAR est ouvert et connecté. PC éteint : le téléphone affiche la dernière copie." },
+      { t: "Agir à distance", d: "Valider ou rejeter une perte, créer des brouillons de commande depuis les suggestions, écarter une suggestion, poser une question à Oscar. Choisissez votre profil et saisissez votre code PIN : le PC exécute l'action avec vos droits et l'inscrit dans l'historique.", warn: "Seuls les profils qui ont un code PIN peuvent agir depuis le téléphone. Cinq codes faux bloquent les actions à distance de ce profil pendant 15 minutes." },
+      { t: "Téléphone perdu ou changé de main", where: "Paramètres › Mobile", d: "[[Nouveau code]] déconnecte immédiatement tous les téléphones ; réappairez ceux de confiance. [[Désactiver]] coupe l'accès mobile et efface la copie en ligne." },
     ],
   },
   {

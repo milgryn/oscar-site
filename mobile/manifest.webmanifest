@@ -1,0 +1,17 @@
+{
+  "name": "OSCAR Mobile",
+  "short_name": "OSCAR",
+  "description": "Votre boucherie à distance : tableau de bord, stocks et DLC, pertes, commandes, Oscar.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#131012",
+  "theme_color": "#8e1f33",
+  "icons": [
+    { "src": "icons/icon-256.png", "sizes": "256x256", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

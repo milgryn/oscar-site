@@ -567,9 +567,9 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: 
             <span class="c-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8 9.9a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg></span>
             <span><small>Téléphone</small><strong class="mono">06 98 68 27 84</strong></span>
           </a>
-          <a class="contact-card magnet" href="mailto:milan.grynberg2006@gmail.com?subject=OSCAR%20%E2%80%94%20demande%20d%27information">
+          <a class="contact-card magnet" href="#quote-form">
             <span class="c-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg></span>
-            <span><small>E-mail</small><strong>milan.grynberg2006@gmail.com</strong></span>
+            <span><small>Message</small><strong>Écrivez-moi avec le formulaire</strong></span>
           </a>
         </div>
       </div>
@@ -601,15 +601,16 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: 
 <footer class="band">
   <div class="wrap">
     <span><strong>OSCAR</strong> · Optimisation des Stocks, Commandes, Analyses et Rendements</span>
-    <span><a href="tel:+33698682784">06 98 68 27 84</a> · <a href="mailto:milan.grynberg2006@gmail.com">milan.grynberg2006@gmail.com</a></span>
+    <span><a href="tel:+33698682784">06 98 68 27 84</a></span>
   </div>
 </footer>
 
 <script>
-// Messages du formulaire transmis par e-mail via FormSubmit (formsubmit.co).
-const CONTACT_EMAIL = "milan.grynberg2006@gmail.com";
+// Messages du formulaire transmis par e-mail via FormSubmit (formsubmit.co). L'adresse n'est pas affichée sur la page.
+// Après activation, remplacer l'adresse par l'identifiant aléatoire fourni par FormSubmit pour qu'elle disparaisse aussi du code.
+const FORM_TARGET = "milan.grynberg2006@gmail.com";
 const CONTACT_PHONE = "06 98 68 27 84";
-const FORM_ENDPOINT = "https://formsubmit.co/ajax/" + CONTACT_EMAIL;
+const FORM_ENDPOINT = "https://formsubmit.co/ajax/" + FORM_TARGET;
 
 const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fine = matchMedia("(pointer: fine)").matches;
@@ -829,7 +830,7 @@ form.addEventListener("submit", async (e) => {
     form.querySelectorAll("input:not([type=hidden]), textarea").forEach((el) => (el.value = ""));
     showResult(true, "Message envoyé", "Merci " + "! Je vous réponds rapidement, en général dans la journée. Pour une question urgente : " + CONTACT_PHONE + ".");
   } catch {
-    showResult(false, "Le message n'a pas pu partir", "Votre message est conservé dans le formulaire. Réessayez dans un instant, ou contactez-moi directement au " + CONTACT_PHONE + " ou à " + CONTACT_EMAIL + ".");
+    showResult(false, "Le message n'a pas pu partir", "Votre message est conservé dans le formulaire. Réessayez dans un instant, ou appelez-moi au " + CONTACT_PHONE + ".");
   } finally {
     send.disabled = false;
     send.innerHTML = label;

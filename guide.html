@@ -190,6 +190,10 @@ mark { background: color-mix(in srgb, var(--brand-2) 35%, transparent); color: i
 .toast.show { transform: translate(-50%, 0); }
 .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 55; }
 
+/* Arrivée depuis OSCAR (bouton Aide) : le parcours visé s'illumine. */
+.chapter.flash .ch-head { animation: flash 2.4s var(--ease); border-radius: 14px; }
+@keyframes flash { 0%, 40% { background: var(--brand-soft); box-shadow: 0 0 0 12px var(--brand-soft); } 100% { background: transparent; box-shadow: 0 0 0 12px transparent; } }
+
 /* Apparitions */
 .js .reveal { transition: transform .9s var(--ease), opacity .9s var(--ease); }
 .js .reveal:not(.in) { opacity: .25; transform: translateY(30px); }
@@ -668,6 +672,24 @@ addEventListener("scroll", () => {
     ticking = false;
   });
 }, { passive: true });
+
+/* Lien direct vers un parcours (#ventes, #inventaires…) : les parcours étant créés par le script,
+   le navigateur ne trouve pas l'ancre au chargement ; on y va une fois la page construite. */
+function goToHash() {
+  const id = decodeURIComponent(location.hash.slice(1));
+  const target = id && document.getElementById(id);
+  if (!target || !target.classList.contains("chapter")) return;
+  target.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+  const root = document.documentElement;
+  root.style.scrollBehavior = "auto"; // saut immédiat, sans défiler toute la page
+  target.scrollIntoView({ block: "start" });
+  requestAnimationFrame(() => (root.style.scrollBehavior = ""));
+  target.classList.remove("flash"); void target.offsetWidth; target.classList.add("flash");
+}
+if (location.hash) history.scrollRestoration = "manual"; // sinon le navigateur remet l'ancienne position
+goToHash();
+addEventListener("load", goToHash); // après polices et images, la position exacte peut avoir bougé
+addEventListener("hashchange", goToHash);
 
 /* Sommaire repliable sur petit écran. */
 const toc = document.getElementById("toc");

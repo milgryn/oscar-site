@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guide OSCAR</title>
+<meta name="description" content="Guide complet d'OSCAR, pas à pas : installation, catalogue, réceptions, ventes, pertes, commandes, fabrication, traçabilité, inventaires, prévisions, simulations, Chef IA Oscar et sauvegardes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Guide : sommaire collant à gauche, parcours à droite ; même identité que la page d'accueil
+   (titres condensés façon étiquette, chiffres en chasse fixe). */
+:root {
+  --bg: #f5f3f2; --surface: #ffffff; --surface-2: #efeaea; --ink: #1b1416; --muted: #645a5c; --line: #e2dbdb;
+  --brand: #8e1f33; --brand-2: #c2452f; --brand-ink: #ffffff; --brand-soft: #f6e4e7; --tag: #f2e6c4; --tag-ink: #3b2f12;
+  --ok: #2f7a5b; --ok-soft: #e3f1ea; --glow: rgba(142, 31, 51, .16);
+  --shadow: 0 1px 2px rgba(40, 10, 18, .06), 0 18px 40px -16px rgba(40, 10, 18, .28);
+  --f-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131012; --surface: #1d181a; --surface-2: #261f22; --ink: #f3ecee; --muted: #aa9fa2; --line: #352b2e;
+    --brand: #d45a70; --brand-2: #e88a5c; --brand-ink: #1a0b0f; --brand-soft: #3a1d24; --tag: #3b331f; --tag-ink: #f2e6c4;
+    --ok: #5cbf92; --ok-soft: #173327; --glow: rgba(212, 90, 112, .22);
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 22px 48px -18px rgba(0,0,0,.75);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131012; --surface: #1d181a; --surface-2: #261f22; --ink: #f3ecee; --muted: #aa9fa2; --line: #352b2e;
+  --brand: #d45a70; --brand-2: #e88a5c; --brand-ink: #1a0b0f; --brand-soft: #3a1d24; --tag: #3b331f; --tag-ink: #f2e6c4;
+  --ok: #5cbf92; --ok-soft: #173327; --glow: rgba(212, 90, 112, .22);
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 22px 48px -18px rgba(0,0,0,.75);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--f-body); overflow-x: hidden; }
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -.01em; }
+p { margin: 0; }
+.band { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1240px; margin: 0 auto; }
+.eyebrow { font: 500 12px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--brand); }
+.muted { color: var(--muted); }
+
+.progress-top { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 50; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--brand), var(--brand-2)); }
+
+/* En-tête */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 84%, transparent);
+  backdrop-filter: blur(14px) saturate(1.4); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; gap: 24px; min-height: 64px; }
+.logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 800 20px/1 var(--f-display); letter-spacing: .2em; }
+.logo-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--brand); display: grid; place-items: center; }
+.logo-mark svg { width: 19px; height: 19px; animation: spin 14s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.nav { display: flex; gap: 6px; margin-left: auto; }
+.nav a { text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500; padding: 8px 12px; border-radius: 999px; transition: background .2s ease, color .2s ease; }
+.nav a:hover { color: var(--ink); background: var(--surface-2); }
+.nav a[aria-current="page"] { color: var(--ink); background: var(--surface-2); }
+.btn { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px; border-radius: 10px;
+  font: 600 14px/1 var(--f-body); text-decoration: none; border: 1px solid transparent; cursor: pointer; transition: transform .3s var(--ease), background .2s ease; }
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--brand); color: var(--brand-ink); }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-ghost:hover { background: var(--surface-2); }
+@media (max-width: 900px) { .nav { display: none; } .top .btn { margin-left: auto; } }
+
+/* Ouverture du guide */
+.intro { position: relative; isolation: isolate; overflow-x: clip; padding-block: clamp(40px, 6vw, 72px) 32px; }
+.aura { position: absolute; z-index: -1; width: min(700px, 110vw); aspect-ratio: 1; top: -260px; right: -160px; border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--glow), transparent 30%, color-mix(in srgb, var(--brand-2) 22%, transparent) 55%, transparent 75%, var(--glow));
+  filter: blur(60px); animation: spin 28s linear infinite; pointer-events: none; }
+.intro h1 { font-size: clamp(40px, 6vw, 74px); line-height: .96; font-weight: 800; font-stretch: 70%; text-transform: uppercase; }
+.intro h1 .line { display: block; overflow: hidden; }
+.intro h1 .line > span { display: inline-block; animation: rise 1s var(--ease) both; }
+.intro h1 .line:nth-child(2) > span { animation-delay: .12s; color: var(--brand); }
+@keyframes rise { from { transform: translateY(105%); } to { transform: none; } }
+.intro-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 40px; align-items: end; }
+.intro .lede { font-size: clamp(17px, 1.6vw, 19px); color: var(--muted); max-width: 60ch; margin-top: 20px; }
+.meter { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: grid; gap: 12px; box-shadow: var(--shadow); animation: fadeUp .9s var(--ease) .3s both; }
+@keyframes fadeUp { from { opacity: .001; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.meter .row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.meter .big { font: 800 44px/1 var(--f-display); font-stretch: 66%; font-variant-numeric: tabular-nums; }
+.bar { height: 10px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.bar > span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--brand), var(--brand-2)); border-radius: inherit; transition: width .8s var(--ease); }
+.search { position: relative; }
+.search input { width: 100%; font: 15px/1.4 var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px 12px 40px; }
+.search input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 4px var(--glow); }
+.search svg { position: absolute; left: 13px; top: 50%; width: 17px; height: 17px; margin-top: -8.5px; color: var(--muted); }
+.meter .actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; font-size: 13px; }
+.linkish { background: none; border: 0; padding: 0; font: inherit; color: var(--muted); text-decoration: underline; cursor: pointer; }
+.linkish:hover { color: var(--brand); }
+@media (max-width: 860px) { .intro-grid { grid-template-columns: 1fr; } }
+
+/* Parcours conseillés */
+.paths { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 32px; }
+.path { display: flex; flex-direction: column; gap: 6px; padding: 18px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); text-decoration: none;
+  transition: transform .4s var(--ease), border-color .3s ease, box-shadow .4s ease; animation: fadeUp .9s var(--ease) both; }
+.path:nth-child(2) { animation-delay: .1s; } .path:nth-child(3) { animation-delay: .2s; }
+.path:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--brand) 40%, var(--line)); box-shadow: var(--shadow); }
+.path strong { font: 700 18px/1.25 var(--f-display); font-stretch: 88%; }
+.path span { font-size: 14px; color: var(--muted); }
+@media (max-width: 760px) { .paths { grid-template-columns: 1fr; } }
+
+/* Mise en page sommaire + contenu */
+.layout { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 48px; align-items: start; padding-block: 24px 96px; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 80px); max-height: calc(100vh - 100px); overflow: auto; padding-right: 6px; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.toc a { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 10px; text-decoration: none; font-size: 14px; color: var(--muted);
+  transition: background .2s ease, color .2s ease, transform .3s var(--ease); }
+.toc a:hover { background: var(--surface-2); color: var(--ink); transform: translateX(3px); }
+.toc a.active { background: var(--surface); color: var(--ink); box-shadow: inset 3px 0 0 var(--brand); }
+.toc .num { font: 500 12px/1 var(--f-mono); color: var(--brand); }
+.ring { width: 22px; height: 22px; }
+.ring circle { fill: none; stroke-width: 3; }
+.ring .bg { stroke: var(--line); }
+.ring .fg { stroke: var(--ok); stroke-linecap: round; transition: stroke-dashoffset .6s var(--ease); transform: rotate(-90deg); transform-origin: 50% 50%; }
+.toc-title { font: 500 12px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px 10px; }
+.toc-toggle { display: none; }
+@media (max-width: 980px) {
+  .layout { grid-template-columns: 1fr; gap: 16px; }
+  .toc { position: static; max-height: none; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 8px; }
+  .toc-toggle { display: flex; width: 100%; justify-content: space-between; }
+  .toc.collapsed ol, .toc.collapsed .toc-title { display: none; }
+}
+
+/* Chapitres */
+.chapter { padding-bottom: 64px; margin-bottom: 64px; border-bottom: 1px solid var(--line); }
+.chapter:last-child { border-bottom: 0; }
+.ch-head { display: grid; gap: 12px; margin-bottom: 26px; }
+.ch-head h2 { font-size: clamp(30px, 4vw, 46px); line-height: 1.02; font-weight: 750; font-stretch: 76%; text-transform: uppercase; }
+.ch-head .meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--f-mono); padding: 6px 9px; border-radius: 999px; background: var(--surface-2); color: var(--muted); }
+.chip.right { background: var(--brand-soft); color: var(--brand); }
+.chip.done { background: var(--ok-soft); color: var(--ok); }
+.ch-head .lede { color: var(--muted); max-width: 70ch; font-size: 17px; }
+.ch-shot { margin: 0 0 28px; }
+.ch-shot .shot { border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); background: var(--surface); transition: transform .6s var(--ease); }
+.ch-shot:hover .shot { transform: scale(1.01); }
+.ch-shot figcaption { font: 400 12px/1.4 var(--f-mono); color: var(--muted); margin-top: 8px; }
+
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: s; }
+.step { counter-increment: s; position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 16px; padding: 18px 18px 18px 14px; border-radius: 14px;
+  background: var(--surface); border: 1px solid var(--line); transition: border-color .3s ease, background .3s ease, transform .4s var(--ease); }
+.step:hover { transform: translateX(4px); border-color: color-mix(in srgb, var(--brand) 35%, var(--line)); }
+.step.checked { background: color-mix(in srgb, var(--ok-soft) 55%, var(--surface)); border-color: color-mix(in srgb, var(--ok) 35%, var(--line)); }
+.check { position: relative; width: 36px; height: 36px; }
+.check input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.check .box { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font: 500 13px/1 var(--f-mono); background: var(--brand-soft); color: var(--brand);
+  transition: background .3s ease, color .3s ease, transform .4s var(--ease); pointer-events: none; }
+.check .box::before { content: counter(s, decimal-leading-zero); }
+.step.checked .box { background: var(--ok); color: #fff; transform: rotate(360deg); }
+.step.checked .box::before { content: "✓"; font-size: 17px; }
+.check input:focus-visible + .box { outline: 2px solid var(--brand); outline-offset: 3px; }
+.step h3 { font-size: 18px; font-weight: 700; font-stretch: 92%; line-height: 1.3; }
+.step .body { display: grid; gap: 8px; min-width: 0; }
+.step .body p, .step .body li { color: var(--muted); font-size: 15px; }
+.step .body ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+.ui { display: inline-block; font: 600 13px/1.4 var(--f-body); color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px; padding: 0 6px; white-space: nowrap; }
+kbd { font: 500 12px/1.4 var(--f-mono); background: var(--surface-2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; }
+.where { font: 500 12px/1.4 var(--f-mono); color: var(--brand); }
+.tip { display: grid; grid-template-columns: 22px 1fr; gap: 8px; background: var(--tag); color: var(--tag-ink); border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+.tip::before { content: "★"; }
+.warn { display: grid; grid-template-columns: 22px 1fr; gap: 8px; background: var(--brand-soft); color: var(--ink); border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+.warn::before { content: "!"; font: 800 15px/1.4 var(--f-display); color: var(--brand); text-align: center; }
+mark { background: color-mix(in srgb, var(--brand-2) 35%, transparent); color: inherit; border-radius: 3px; padding: 0 1px; }
+
+.pager { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; }
+.pager a { flex: 1; max-width: 48%; display: grid; gap: 2px; text-decoration: none; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); transition: border-color .3s ease, transform .3s var(--ease); }
+.pager a:hover { border-color: var(--brand); transform: translateY(-2px); }
+.pager a.next { text-align: right; margin-left: auto; }
+.pager small { font: 500 11px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.pager span { font-weight: 600; }
+
+.empty { padding: 48px 0; color: var(--muted); }
+
+/* Félicitation en fin de parcours */
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 60; transform: translate(-50%, 140%); background: var(--ink); color: var(--bg);
+  padding: 12px 18px; border-radius: 12px; font-weight: 600; box-shadow: var(--shadow); transition: transform .5s var(--ease); max-width: calc(100vw - 32px); }
+.toast.show { transform: translate(-50%, 0); }
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 55; }
+
+/* Apparitions */
+.js .reveal { transition: transform .9s var(--ease), opacity .9s var(--ease); }
+.js .reveal:not(.in) { opacity: .25; transform: translateY(30px); }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px; color: var(--muted); font-size: 13px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: space-between; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js .reveal:not(.in) { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+<div class="progress-top" id="progress-top" aria-hidden="true"></div>
+
+<header class="top band">
+  <div class="wrap">
+    <a class="logo" href="index.html" aria-label="OSCAR, page d'accueil">
+      <span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><circle cx="12" cy="12" r="7.5"/><path d="M12 2.5v5M12 16.5v5M2.5 12h5M16.5 12h5"/></svg></span>
+      OSCAR
+    </a>
+    <nav class="nav" aria-label="Site">
+      <a href="index.html#fonctionnalites">Fonctionnalités</a>
+      <a href="index.html#intelligence">Prévisions &amp; IA</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="guide.html" aria-current="page">Guide</a>
+      <a href="index.html#faq">Questions</a>
+    </nav>
+    <a class="btn btn-primary" href="index.html#contact">Demander une démo</a>
+  </div>
+</header>
+
+<main>
+  <section class="intro band">
+    <div class="aura" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="intro-grid">
+        <div>
+          <span class="eyebrow">Guide d'utilisation · OSCAR 1.0</span>
+          <h1 aria-label="Le guide complet, pas à pas" style="margin-top:16px"><span class="line" aria-hidden="true"><span>Le guide complet,</span></span><span class="line" aria-hidden="true"><span>pas à pas</span></span></h1>
+          <p class="lede">20 parcours pour prendre OSCAR en main, de l'installation à la routine du soir. Chaque étape cite les boutons tels qu'ils apparaissent à l'écran. Cochez les étapes au fur et à mesure : votre progression reste enregistrée dans ce navigateur.</p>
+        </div>
+        <div class="meter" aria-label="Votre progression">
+          <div class="row"><span class="muted">Votre progression</span><span class="big" id="pct">0 %</span></div>
+          <div class="bar" aria-hidden="true"><span id="bar"></span></div>
+          <div class="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <label for="q" class="sr" style="position:absolute;left:-9999px">Rechercher dans le guide</label>
+            <input id="q" type="search" placeholder="Rechercher : DLC, inventaire, PIN, sauvegarde…" autocomplete="off">
+          </div>
+          <div class="actions"><span class="muted" id="count"></span><button class="linkish" type="button" id="reset">Remettre ma progression à zéro</button></div>
+        </div>
+      </div>
+      <div class="paths" aria-label="Par où commencer">
+        <a class="path" href="#demarrer"><strong>Je découvre OSCAR</strong><span>Installation, démonstration, profils et repères : parcours 1 à 3.</span></a>
+        <a class="path" href="#catalogue"><strong>Je gère le magasin</strong><span>Catalogue, réceptions, ventes, pertes, commandes, fabrication et inventaires : parcours 4 à 13.</span></a>
+        <a class="path" href="#analyses"><strong>Je pilote et j'anticipe</strong><span>Analyses, prévisions, simulations et Chef IA Oscar : parcours 14 à 17.</span></a>
+      </div>
+    </div>
+  </section>
+
+  <div class="band">
+    <div class="wrap layout">
+      <aside class="toc collapsed" id="toc" aria-label="Sommaire du guide">
+        <button class="btn btn-ghost toc-toggle" type="button" id="toc-toggle" aria-expanded="false">Sommaire <span aria-hidden="true">▾</span></button>
+        <p class="toc-title">Sommaire</p>
+        <ol id="toc-list"></ol>
+      </aside>
+      <div id="chapters"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="band">
+  <div class="wrap">
+    <span><strong>OSCAR</strong> · Guide d'utilisation de la version 1.0</span>
+    <span>Captures réalisées sur la boutique de démonstration, aux données fictives.</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+
+<script>
+/* Contenu du guide. Les libellés entre [[ ]] sont des boutons ou onglets de l'application, « où » indique l'écran. */
+const GUIDE = [
+  {
+    id: "demarrer", title: "Installer et démarrer", right: "Aucun", img: "bienvenue", alt: "Écran d'accueil du premier lancement d'OSCAR",
+    intro: "Installez OSCAR, créez votre établissement et découvrez le logiciel sur une boutique fictive sans toucher à vos données.",
+    steps: [
+      { t: "Installer OSCAR", d: "Lancez le fichier OSCAR_1.0.0_x64-setup.exe (installation pour votre session Windows, sans droits administrateur) ou le fichier .msi si votre informaticien préfère.", tip: "Windows peut afficher un avertissement SmartScreen tant que l'installateur n'est pas signé : choisissez « Informations complémentaires » puis « Exécuter quand même »." },
+      { t: "Créer votre établissement", d: "Au premier lancement, cliquez sur [[Démarrer]]. L'assistant demande dans l'ordre :", list: ["le nom, l'adresse et la devise de la boutique ;", "les horaires d'ouverture, jour par jour (une coupure à midi est possible) ;", "les préférences de gestion : TVA par défaut, nombre de jours d'alerte avant une DLC, validation des pertes ;", "votre profil de patron, puis les membres de l'équipe."], end: "Terminez avec [[Créer mon établissement]]." },
+      { t: "Ou restaurer une sauvegarde", d: "Vous changez d'ordinateur ? Sur le premier écran, choisissez la restauration et indiquez votre fichier .oscarbak. OSCAR le vérifie avant de l'utiliser." },
+      { t: "Ouvrir la démonstration", where: "Paramètres › Démonstration", d: "Cliquez sur [[Ouvrir la démonstration]] : une boucherie fictive avec 8 semaines d'historique s'ouvre. Une bannière orange rappelle que tout y est fictif et rangé à part.", tip: "Testez tout ce que vous voulez dans la démonstration : vos vraies données ne sont jamais touchées." },
+      { t: "Revenir à votre boutique", d: "Cliquez sur [[Revenir à mon établissement]] dans la bannière orange. Pour repartir d'une démonstration neuve : [[Réinitialiser la démonstration]]." },
+    ],
+  },
+  {
+    id: "profils", title: "Profils, droits et code PIN", right: "Gestion des utilisateurs", img: "profils", alt: "Écran « Qui utilise OSCAR ? » avec les profils de l'équipe",
+    intro: "Chaque personne a son profil. Les rôles donnent des droits par défaut que vous pouvez ajuster ; le code PIN protège les opérations sensibles.",
+    steps: [
+      { t: "Choisir son profil", d: "À l'ouverture, chaque personne clique sur son nom à l'écran « Qui utilise OSCAR ? ». Pour changer de profil plus tard : menu du profil en haut à droite, ou [[Ctrl]]+[[Maj]]+[[L]]." },
+      { t: "Ajouter un membre de l'équipe", where: "Paramètres › Profils", d: "Cliquez sur [[Nouveau profil]], indiquez le nom, la couleur et le rôle : patron, responsable, chef boucher, boucher, apprenti ou vendeur." },
+      { t: "Ajuster les droits", where: "Paramètres › Profils", d: "Ouvrez un profil avec [[Modifier]] et cochez ou décochez les droits : consultation et modification des stocks, ventes, remises, pertes, marges, commandes, analyses, sauvegardes, paramètres.", tip: "Retirez le droit « marges » aux vendeurs : les coûts d'achat et les marges leur sont alors masqués partout." },
+      { t: "Protéger un profil par un code PIN", where: "Paramètres › Profils ou Mon profil", d: "Cliquez sur [[Définir]] à côté du code PIN et saisissez 4 à 8 chiffres. Les opérations sensibles (paramètres, restauration, annulation de vente…) le demanderont ; une fois saisi, il reste valable 5 minutes.", warn: "Cinq erreurs de PIN bloquent la saisie 30 secondes. Le choix d'un profil n'est pas un mot de passe : protégez aussi votre session Windows." },
+      { t: "Archiver un départ", d: "Un salarié part ? Archivez son profil plutôt que de le supprimer : son nom reste dans l'historique des opérations qu'il a faites." },
+    ],
+  },
+  {
+    id: "reperes", title: "Se repérer dans OSCAR", right: "Aucun", img: "tableau-de-bord", alt: "Tableau de bord avec le message du jour d'Oscar",
+    intro: "Quelques repères pour aller vite : la barre latérale, la recherche, le message du jour et les raccourcis.",
+    steps: [
+      { t: "La barre latérale", d: "Les modules sont rangés par famille : Pilotage, Catalogue et stocks, Activité, Production, Intelligence, Système. [[Ctrl]]+[[B]] la replie pour gagner de la place." },
+      { t: "La recherche rapide", d: "[[Ctrl]]+[[K]] ouvre la recherche : tapez quelques lettres (« perte », « invent », « sauv ») pour ouvrir un module ou lancer une action." },
+      { t: "Le message du jour d'Oscar", where: "Accueil et Tableau de bord", d: "Il liste ce qui demande votre attention : lots à DLC proche ou dépassée, ruptures, surstocks, pertes à valider, sauvegarde ancienne, suggestions en attente. Chaque point a un bouton qui mène à l'écran où agir." },
+      { t: "La cloche de notifications", d: "Elle reprend les mêmes points. Le chiffre indique combien restent à traiter." },
+      { t: "Thème clair ou sombre", d: "Le bouton soleil/lune en haut à droite change le thème. Le choix est mémorisé pour chaque profil." },
+    ],
+  },
+  {
+    id: "catalogue", title: "Construire le catalogue", right: "Modification des stocks", img: "stocks", alt: "Écran des stocks par produit",
+    intro: "Le catalogue est la base de tout : produits, catégories et emplacements. Prenez le temps de bien régler les seuils.",
+    steps: [
+      { t: "Organiser les catégories et emplacements", where: "Produits › Catégories, Produits › Emplacements", d: "Adaptez les catégories (Bœuf, Veau, Porc, Volaille, Préparations…) et créez vos emplacements : chambre froide, vitrine, laboratoire, réserve." },
+      { t: "Créer un produit", where: "Produits", d: "Cliquez sur [[Nouveau produit]] et renseignez :", list: ["nom, catégorie, espèce ;", "unité : au kilo ou à la pièce ;", "prix d'achat et prix de vente, taux de TVA ;", "fournisseur habituel et emplacement."] },
+      { t: "Régler les seuils", d: "Le stock minimum déclenche l'alerte de rupture et les suggestions de commande ; le maximum signale un surstock. Commencez large et resserrez au bout de quelques semaines.", tip: "Les prévisions (parcours 15) proposent des quantités plus fines que les seuils dès 4 semaines d'historique." },
+      { t: "Consulter une fiche produit", d: "Cliquez sur un produit : stock par lot, mouvements, ventes et pertes récentes, prix." },
+      { t: "Archiver un produit", d: "Un produit qui n'est plus vendu s'archive : il disparaît des listes mais son historique reste consultable." },
+    ],
+  },
+  {
+    id: "receptions", title: "Réceptionner une livraison", right: "Modification des stocks", img: "reception", alt: "Contrôle d'une réception avant validation",
+    intro: "Chaque livraison crée des lots avec leur numéro et leur date limite. C'est le point de départ de la traçabilité.",
+    steps: [
+      { t: "Créer la réception", where: "Réceptions", d: "Cliquez sur [[Nouvelle réception]], choisissez le fournisseur et indiquez le numéro du bon de livraison." },
+      { t: "Saisir les lignes", d: "Pour chaque produit livré, [[Ajouter une ligne]] : quantité, coût unitaire, numéro de lot, DLC ou DDM, emplacement.", warn: "Recopiez la DLC portée sur l'étiquette du fournisseur. OSCAR ne l'invente jamais." },
+      { t: "Contrôler puis valider", d: "Cliquez sur [[Contrôler et valider]] : OSCAR signale les incohérences (DLC dépassée ou très courte, coût éloigné du prix habituel, quantité inhabituelle). Corrigez ou confirmez, puis [[Valider la réception]]." },
+      { t: "Réceptionner une commande", where: "Commandes", d: "Si la livraison correspond à une commande passée dans OSCAR, ouvrez la commande et cliquez sur [[Réceptionner la livraison]] : la réception est préremplie avec ce qui reste à recevoir." },
+    ],
+  },
+  {
+    id: "lots", title: "Lots, DLC et rotation FEFO", right: "Consultation des stocks", img: "lots", alt: "Liste des lots avec leurs dates limites",
+    intro: "OSCAR vend et fabrique toujours d'abord le lot qui périme le plus tôt (FEFO). Les lots à DLC proche sont signalés.",
+    steps: [
+      { t: "Consulter les lots", where: "Lots", d: "Chaque lot affiche sa quantité restante, sa date limite et le nombre de jours restants, en couleur quand l'échéance approche." },
+      { t: "Comprendre la rotation FEFO", d: "À la vente comme en fabrication, OSCAR prélève automatiquement le lot qui périme en premier. Un lot à DLC dépassée n'est plus proposé." },
+      { t: "Traiter un lot à DLC proche", d: "Le message du jour vous prévient selon le nombre de jours choisi dans les paramètres. Mettez le lot en avant en vitrine, transformez-le selon vos procédures, ou déclarez une perte." },
+      { t: "Suivre les mouvements", where: "Stocks › Mouvements", d: "Tout mouvement est conservé : entrée, vente, perte, fabrication, ajustement d'inventaire. Le stock ne peut jamais devenir négatif." },
+    ],
+  },
+  {
+    id: "ventes", title: "Vendre au comptoir", right: "Ventes", img: "ventes", alt: "Écran de saisie des ventes",
+    intro: "La saisie est pensée pour le clavier. OSCAR choisit le bon lot et calcule les montants au centime.",
+    steps: [
+      { t: "Ajouter des produits", where: "Ventes", d: "Tapez le début du nom ou cliquez dans la grille, saisissez le poids ou le nombre de pièces, puis [[Entrée]] pour ajouter la ligne." },
+      { t: "Appliquer une remise", d: "Les remises et les changements de prix sont réservés aux profils qui ont le droit « remises »." },
+      { t: "Enregistrer la vente", d: "[[Enregistrer la vente]] ou [[Ctrl]]+[[Entrée]]. Une vente envoyée deux fois par erreur n'est enregistrée qu'une fois.", tip: "Le justificatif imprimé porte la mention « document non fiscal » : OSCAR complète votre caisse, il ne la remplace pas." },
+      { t: "Annuler une vente", where: "Ventes › Historique", d: "Ouvrez la vente, [[Annuler la vente]], indiquez le motif et votre PIN. La marchandise retourne dans les mêmes lots ; l'annulation reste visible." },
+    ],
+  },
+  {
+    id: "pertes", title: "Déclarer et analyser les pertes", right: "Déclaration de pertes", img: "pertes", alt: "Écran des pertes",
+    intro: "Une perte bien déclarée, c'est un problème qu'on peut corriger. OSCAR chiffre chaque perte au coût et à la valeur de vente perdue.",
+    steps: [
+      { t: "Déclarer une perte", where: "Pertes", d: "Choisissez le lot (les lots à DLC dépassée sont proposés en premier), la quantité et le motif parmi 9 : invendu, DLC dépassée, surproduction, détérioration, erreur de préparation, erreur de découpe, problème de conservation, erreur de commande ou autre, puis [[Déclarer la perte]]." },
+      { t: "Valider ou rejeter", d: "Si la validation des pertes est activée dans les paramètres, un responsable [[Valider]] ou [[Rejeter]]. La quantité reste réservée en attendant." },
+      { t: "Analyser", where: "Pertes › Analyse et Analyses › Pertes", d: "Par produit, catégorie ou motif, sur 30 jours, 12 semaines ou 12 mois. OSCAR signale les problèmes récurrents : un produit souvent jeté, un motif qui pèse lourd, une hausse brutale." },
+    ],
+  },
+  {
+    id: "commandes", title: "Fournisseurs et commandes", right: "Gestion des commandes", img: "suggestions", alt: "Suggestions de commande",
+    intro: "Décrivez vos fournisseurs une fois, OSCAR calcule les dates de livraison et vous suggère quoi commander.",
+    steps: [
+      { t: "Créer un fournisseur", where: "Fournisseurs", d: "[[Nouveau fournisseur]] : coordonnées, jours de livraison, délai de commande, produits fournis et leurs prix." },
+      { t: "Partir des suggestions", where: "Prévisions › Commandes ou Commandes › Suggestions", d: "Pour chaque produit, OSCAR explique la quantité proposée : ventes prévues jusqu'à la livraison suivante, marge de sécurité, stock projeté, déjà commandé. Modifiez si besoin." },
+      { t: "Créer et passer la commande", d: "Créez le brouillon depuis les suggestions (rien n'est commandé sans ce clic), vérifiez-le puis [[Passer la commande]]. La date de livraison prévue est calculée." },
+      { t: "Recevoir, même partiellement", d: "[[Réceptionner la livraison]] à l'arrivée. S'il manque des produits, la commande reste partiellement reçue ; [[Clôturer avec écart]] enregistre un incident fournisseur." },
+      { t: "Suivre vos fournisseurs", where: "Analyses › Fournisseurs", d: "Ponctualité, retards, taux de service, hausses de prix et incidents, fournisseur par fournisseur. [[Enregistrer l'incident]] pour noter un problème à la main." },
+    ],
+  },
+  {
+    id: "fabrication", title: "Fabriquer et maîtriser les rendements", right: "Modification des stocks", img: "fabrication", alt: "Éditeur de fabrication avec rendement et coût matière",
+    intro: "Saucisses, merguez, haché, plats cuisinés : OSCAR suit les lots utilisés, le rendement réel et le coût de revient.",
+    steps: [
+      { t: "Créer une fiche de fabrication", where: "Transformations › Fiches", d: "[[Nouvelle fiche]] : produit fabriqué, quantité de référence, intrants (matières et ingrédients) avec [[Ajouter un intrant]], instructions et note de conservation." },
+      { t: "Préparer depuis une fiche", d: "Sur la fiche, cliquez sur [[Préparer]] : les quantités sont mises à l'échelle et les lots choisis en FEFO. Les manques sont signalés." },
+      { t: "Ou saisir librement", where: "Transformations", d: "[[Nouvelle fabrication]] pour une transformation sans fiche (découpe, parage)." },
+      { t: "Vérifier l'aperçu", d: "Avant d'enregistrer : matière entrée, rendement réel contre attendu, perte technique, coût matière, coût par kilo et marge théorique.", warn: "Saisissez vous-même la DLC du produit fabriqué. Elle est refusée si elle dépasse celle des intrants sans justification écrite." },
+      { t: "Suivre les rendements", where: "Analyses › Rendements", d: "Rendement moyen par produit, écarts, fabrication par fabrication. Un écart de plus de 5 points est signalé dans le message d'Oscar." },
+    ],
+  },
+  {
+    id: "tracabilite", title: "Tracer un lot et gérer un rappel", right: "Consultation des stocks", img: "tracabilite", alt: "Écran de traçabilité d'un lot",
+    intro: "En cas de rappel sanitaire, retrouvez en quelques secondes d'où vient un lot et où il est parti.",
+    steps: [
+      { t: "Rechercher le lot", where: "Traçabilité", d: "Tapez le numéro de lot, le produit ou le fournisseur. Depuis la liste des lots, le lien [[Tracer]] fait la même chose." },
+      { t: "Remonter l'amont", d: "Réception, fournisseur, bon de livraison et, pour un produit fabriqué, tous les lots utilisés, récursivement." },
+      { t: "Suivre l'aval", d: "Ventes, pertes, ajustements et produits fabriqués à partir du lot." },
+      { t: "Utiliser « En cas de rappel »", d: "La rubrique liste les ventes et les lots concernés : c'est la base de votre déclaration et de l'information des clients." },
+    ],
+  },
+  {
+    id: "inventaires", title: "Faire un inventaire", right: "Modification des stocks", img: "comptage", alt: "Comptage d'inventaire",
+    intro: "Général, rapide, par catégorie, emplacement ou lot. Le comptage est enregistré au fil de l'eau : vous pouvez l'interrompre.",
+    steps: [
+      { t: "Lancer l'inventaire", where: "Inventaires", d: "[[Nouvel inventaire]] et choisissez sa portée. Un seul inventaire peut être en cours à la fois." },
+      { t: "Compter", d: "Saisissez les quantités comptées, ligne par ligne. Chaque saisie est enregistrée en quittant le champ ; [[Reprendre le comptage]] permet de continuer plus tard." },
+      { t: "Justifier les écarts", d: "OSCAR calcule l'écart en quantité et en valeur. Chaque écart doit être justifié (casse, erreur de pesée, vol…)." },
+      { t: "Valider", d: "[[Valider l'inventaire]] crée les ajustements de stock, visibles dans l'historique. [[Exporter (CSV)]] garde une trace de la feuille." },
+    ],
+  },
+  {
+    id: "affluence", title: "Affluence et calendrier", right: "Gestion de l'affluence", img: "affluence", alt: "Statistiques d'affluence",
+    intro: "Comptez les clients et notez les événements : les prévisions en tiennent compte.",
+    steps: [
+      { t: "Compter les clients", where: "Affluence › Comptage", d: "Cliquez sur [[Client entré]] à chaque entrée. Les comptes de l'heure se corrigent si besoin (corrections conservées)." },
+      { t: "Remplir le calendrier", where: "Affluence › Calendrier", d: "[[Ajouter au calendrier]] : fermetures exceptionnelles, promotions, événements (marché, fête locale). Une journée atypique peut être écartée des moyennes." },
+      { t: "Lire les statistiques", where: "Affluence", d: "Fréquentation par jour et par heure, carte de chaleur, taux de transformation (tickets / clients comptés)." },
+    ],
+  },
+  {
+    id: "analyses", title: "Analyses et rapports", right: "Analyses et rapports", img: "analyses", alt: "Analyse des ventes et des marges",
+    intro: "Vos chiffres sur la période de votre choix, comparés à la période précédente, et des rapports à imprimer ou exporter.",
+    steps: [
+      { t: "Choisir la période", where: "Analyses", d: "Période prédéfinie ou personnalisée ; la comparaison porte toujours sur la période précédente de même durée." },
+      { t: "Parcourir les onglets", d: "Ventes et marges, Pertes, Rendements, Stocks, Fournisseurs. Les coûts et marges ne s'affichent qu'aux profils autorisés." },
+      { t: "Produire un rapport", where: "Rapports", d: "Choisissez le rapport (ventes par produit, stock valorisé, pertes, rendements, fournisseurs, affluence, inventaire, prévisions…), puis [[Imprimer]] ou l'export PDF, Excel ou CSV. Chaque export est journalisé." },
+    ],
+    img2: "rapports", alt2: "Écran des rapports",
+  },
+  {
+    id: "previsions", title: "Prévisions et suggestions", right: "Consultation des stocks", img: "previsions", alt: "Prévisions de ventes par produit",
+    intro: "Après 4 semaines de ventes, OSCAR prévoit chaque produit sur 7 jours et vous propose quoi commander et quoi préparer.",
+    steps: [
+      { t: "Lire une prévision", where: "Prévisions", d: "Pour chaque produit : quantités prévues jour par jour, méthode retenue et erreur habituelle. Survolez une valeur pour voir la fourchette (80 % des cas passés).", tip: "Le modèle n'est utilisé que s'il fait mieux que les méthodes simples (semaine précédente, moyenne de 4 semaines). Sinon, OSCAR garde la méthode simple et vous le dit." },
+      { t: "Anticiper ruptures et invendus", where: "Prévisions › Ruptures et invendus", d: "Les produits qui manqueront avant la prochaine livraison possible, et les lots qui risquent de rester en vitrine." },
+      { t: "Suivre les suggestions de production", where: "Prévisions › Production", d: "Pour chaque fiche active : quantité à préparer, lots à utiliser, ouverture de l'éditeur prérempli." },
+      { t: "Décider et garder la trace", where: "Prévisions › Recommandations", d: "Chaque suggestion est mémorisée avec votre décision : suivie, modifiée ou [[Écarter]] avec un motif. Plus tard, OSCAR affiche le résultat observé." },
+      { t: "Valider une correction proposée", where: "Prévisions › Apprentissage", d: "Si une prévision se trompe toujours dans le même sens, OSCAR propose une correction vérifiée sur des semaines récentes. Elle ne s'applique qu'après [[Activer]] (avec votre PIN) et se retire à tout moment." },
+    ],
+    img2: "risques", alt2: "Ruptures et invendus prévus",
+  },
+  {
+    id: "simulations", title: "Simulations et anomalies", right: "Analyses et marges", img: "simulation", alt: "Simulateur de scénarios",
+    intro: "Testez une décision avant de la prendre. Rien n'est enregistré, rien n'est commandé.",
+    steps: [
+      { t: "Simuler un scénario", where: "Simulations › Scénarios", d: "Faites varier l'affluence, les prix (avec la réaction supposée des clients), les commandes, la demande d'un produit, ajoutez une production ou supprimez une livraison, puis [[Simuler]]. Les raccourcis « Prix +5 % », « Commandes −20 % », « Affluence +30 % » lancent un exemple." },
+      { t: "Lire le résultat", d: "Chiffre d'affaires, marge, ventes manquées, pertes, achats, stock restant et jours de rupture, comparés à la situation actuelle, avec la fourchette demande basse / haute et les hypothèses retenues." },
+      { t: "Préparer la semaine", where: "Simulations › Plan de la semaine", d: "Commandes à passer au plus tard (jamais un jour de fermeture), livraisons attendues, fabrications, affluence prévue." },
+      { t: "Optimiser une commande", where: "Simulations › Optimisation des commandes", d: "Choisissez votre priorité (équilibre, limiter les pertes, éviter les ruptures) : OSCAR compare 0 à 150 % de chaque suggestion et retient la meilleure option, avec le détail des options." },
+      { t: "Surveiller les anomalies", where: "Simulations › Anomalies", d: "Pertes en hausse, ventes en chute, écarts d'inventaire, rendements anormaux, prix d'achat qui bougent, saisies inhabituelles. Ce sont des chiffres à vérifier, jamais des mises en cause." },
+    ],
+    img2: "plan", alt2: "Plan de la semaine",
+  },
+  {
+    id: "oscar", title: "Chef IA Oscar", right: "Selon la question", img: "oscar", alt: "Réponse d'Oscar à une question",
+    intro: "Posez vos questions en français. Oscar calcule sur vos données, cite ses sources et donne l'incertitude. Il ne modifie jamais rien.",
+    steps: [
+      { t: "Poser une question", where: "Chef IA Oscar", d: "Tapez votre question puis [[Demander]]. Exemples :", list: ["« Qu'est-ce que je dois préparer demain ? »", "« Combien de merguez dois-je produire samedi ? »", "« Est-ce que je dois commander davantage de paleron ? »", "« Pourquoi mes pertes augmentent-elles ? »", "« Et si mon affluence augmente de 30 % ? »", "« Y a-t-il des anomalies cette semaine ? »"] },
+      { t: "Lire la réponse", d: "Ce qu'Oscar a compris, la synthèse chiffrée, les faits, le tableau, l'incertitude, les sources (vos données, procédure, connaissance générale, règle OSCAR) et un lien vers l'écran où décider." },
+      { t: "Ajouter vos procédures", where: "Chef IA Oscar › Base de connaissances", d: "[[Ajouter une procédure]] : conservation, hygiène, découpe… Vos procédures sont citées en priorité sur les connaissances générales." },
+      { t: "Option : modèle de langage local", where: "Paramètres › Assistant", d: "Un modèle installé sur cet ordinateur peut reformuler les réponses. Désactivé par défaut, il ne peut pas ajouter de chiffre ; [[Tester la connexion]] vérifie qu'il répond." },
+    ],
+    img2: "connaissances", alt2: "Base de connaissances",
+  },
+  {
+    id: "sauvegardes", title: "Sauvegarder et restaurer", right: "Création de sauvegardes", img: "sauvegardes", alt: "Écran des sauvegardes avec les sauvegardes automatiques",
+    intro: "Vos données n'existent que sur cet ordinateur : les sauvegardes sont votre assurance.",
+    steps: [
+      { t: "Vérifier les sauvegardes automatiques", where: "Sauvegardes", d: "Elles sont actives dès l'installation : une par jour, les 14 dernières conservées, chacune vérifiée. La carte « Sauvegardes automatiques » indique la dernière et la prochaine." },
+      { t: "Ajouter une copie hors de l'ordinateur", d: "Choisissez un second dossier (clé USB, disque externe) puis [[Enregistrer les réglages]]. Chaque sauvegarde automatique y est copiée.", tip: "Une clé USB débranchée au moment de la sauvegarde est signalée dans le message d'Oscar ; la sauvegarde principale est faite quand même." },
+      { t: "Sauvegarder à la main", d: "[[Sauvegarder maintenant]] avant une opération importante, ou [[Exporter vers…]] pour emporter une copie." },
+      { t: "Restaurer", d: "Choisissez le fichier puis confirmez avec votre PIN. OSCAR vérifie le fichier, crée d'abord une copie de sécurité de la base actuelle, puis remplace les données.", warn: "La restauration remplace toutes les données actuelles par celles de la sauvegarde. La copie de sécurité permet de revenir en arrière." },
+    ],
+  },
+  {
+    id: "mise-a-jour", title: "Mettre à jour OSCAR", right: "Modification des paramètres", img: "sauvegardes", alt: "Écran des sauvegardes, où apparaît la sauvegarde faite avant une mise à jour",
+    intro: "Les nouvelles versions arrivent toutes seules : un bouton vous prévient, vous choisissez le moment. Vos données sont sauvegardées avant chaque installation.",
+    steps: [
+      { t: "Repérer le bouton", d: "Quand une nouvelle version est publiée, le bouton [[Mettre à jour]] apparaît en haut de l'écran, à côté du thème, avec un point qui clignote. OSCAR vérifie au démarrage puis toutes les 6 heures.", tip: "Sans connexion Internet, aucun bouton n'apparaît et OSCAR fonctionne normalement. La vérification reprend dès que la connexion revient." },
+      { t: "Lire les nouveautés", d: "Cliquez sur le bouton : la fenêtre indique la version installée, la nouvelle version et la liste des nouveautés. [[Plus tard]] referme la fenêtre ; le bouton reste visible." },
+      { t: "Installer au bon moment", d: "Choisissez un moment calme (avant l'ouverture, après la fermeture) puis [[Installer et redémarrer]] et saisissez votre code PIN.", warn: "Seuls les profils autorisés à modifier les paramètres (patron, responsable) peuvent installer. Les autres voient le bouton mais doivent prévenir un responsable." },
+      { t: "Ce qui se passe pendant l'installation", d: "Dans l'ordre, sans action de votre part :", list: ["OSCAR crée une sauvegarde vérifiée de vos données (« Avant mise à jour ») ;", "il télécharge la nouvelle version et vérifie sa signature : seul un fichier publié par l'éditeur d'OSCAR est accepté ;", "il installe la version, puis redémarre tout seul."] },
+      { t: "Vérifier après le redémarrage", where: "Paramètres › À propos et Sauvegardes", d: "La nouvelle version est indiquée dans Paramètres › À propos. La sauvegarde « Avant mise à jour » figure dans la liste des sauvegardes : en cas de souci, elle permet de revenir à l'état d'avant." },
+    ],
+  },
+  {
+    id: "routine", title: "La routine du boucher", right: "Aucun", img: "plan", alt: "Plan de la semaine",
+    intro: "Une journée type avec OSCAR. Cochez ce que vous faites déjà : c'est votre liste de contrôle.",
+    steps: [
+      { t: "À l'ouverture", d: "Lisez le message du jour d'Oscar : DLC proches, ruptures probables, pertes à valider, suggestions en attente." },
+      { t: "Avant de préparer", d: "Consultez Prévisions › Production ou demandez à Oscar « Qu'est-ce que je dois préparer aujourd'hui ? »." },
+      { t: "À chaque livraison", d: "Réceptionnez la livraison en recopiant lots et DLC." },
+      { t: "Pendant la journée", d: "Ventes au comptoir, compteur de clients, pertes déclarées au fil de l'eau." },
+      { t: "Avant la fermeture", d: "Consultez les suggestions de commande et le plan de la semaine, passez les commandes du lendemain." },
+      { t: "Chaque semaine", d: "Analyses de la semaine, anomalies, recommandations à décider, inventaire rapide des produits sensibles." },
+      { t: "Chaque mois", d: "Inventaire général, rapports du mois, vérification d'une sauvegarde sur la clé USB." },
+    ],
+  },
+];
+
+const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" };
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ESC[c]);
+const ui = (s) => esc(s).replace(/\[\[(.+?)\]\]/g, (_, l) => (/^(Ctrl|Maj|Entrée|B|K|L)$/.test(l) ? `<kbd>${l}</kbd>` : `<span class="ui">${l}</span>`));
+const total = GUIDE.reduce((n, c) => n + c.steps.length, 0);
+
+/* Progression mémorisée dans ce navigateur (commodité personnelle, sans compte). */
+const KEY = "oscar-guide-progress";
+let done = new Set();
+try { done = new Set(JSON.parse(localStorage.getItem(KEY) || "[]")); } catch {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify([...done])); } catch {} };
+
+const chapters = document.getElementById("chapters");
+const tocList = document.getElementById("toc-list");
+
+chapters.innerHTML = GUIDE.map((c, i) => {
+  const n = String(i + 1).padStart(2, "0");
+  const prev = GUIDE[i - 1], next = GUIDE[i + 1];
+  return `<section class="chapter" id="${c.id}" data-ch="${c.id}">
+    <div class="ch-head reveal">
+      <span class="eyebrow">Parcours ${n} / ${GUIDE.length}</span>
+      <h2>${esc(c.title)}</h2>
+      <div class="meta"><span class="chip">${c.steps.length} étapes</span><span class="chip right">Droit : ${esc(c.right)}</span><span class="chip done" data-done-chip hidden>Parcours terminé</span></div>
+      <p class="lede">${esc(c.intro)}</p>
+    </div>
+    <figure class="ch-shot reveal"><div class="shot"><img src="img/${c.img}.png" alt="${esc(c.alt)}" loading="lazy" width="1709" height="960"></div><figcaption>Capture de l'application, données de démonstration fictives.</figcaption></figure>
+    <ol class="steps">${c.steps.map((s, j) => {
+      const id = `${c.id}-${j}`;
+      return `<li class="step reveal" data-step="${id}" data-text="${esc((s.t + " " + s.d + " " + (s.list || []).join(" ") + " " + (s.tip || "") + " " + (s.warn || "") + " " + (s.where || "")).toLowerCase())}">
+        <label class="check"><input type="checkbox" data-id="${id}" aria-label="Étape ${j + 1} faite : ${esc(s.t)}"><span class="box" aria-hidden="true"></span></label>
+        <div class="body">
+          <h3>${esc(s.t)}</h3>
+          ${s.where ? `<span class="where">Où : ${esc(s.where)}</span>` : ""}
+          <p>${ui(s.d)}</p>
+          ${s.list ? `<ul>${s.list.map((l) => `<li>${ui(l)}</li>`).join("")}</ul>` : ""}
+          ${s.end ? `<p>${ui(s.end)}</p>` : ""}
+          ${s.tip ? `<p class="tip">${ui(s.tip)}</p>` : ""}
+          ${s.warn ? `<p class="warn">${ui(s.warn)}</p>` : ""}
+        </div>
+      </li>`;
+    }).join("")}</ol>
+    ${c.img2 ? `<figure class="ch-shot reveal" style="margin-top:28px"><div class="shot"><img src="img/${c.img2}.png" alt="${esc(c.alt2)}" loading="lazy" width="1709" height="960"></div><figcaption>Capture de l'application, données de démonstration fictives.</figcaption></figure>` : ""}
+    <nav class="pager" aria-label="Parcours voisins">
+      ${prev ? `<a href="#${prev.id}"><small>Précédent</small><span>${esc(prev.title)}</span></a>` : ""}
+      ${next ? `<a class="next" href="#${next.id}"><small>Suivant</small><span>${esc(next.title)}</span></a>` : ""}
+    </nav>
+  </section>`;
+}).join("") + `<p class="empty" id="empty" hidden>Aucune étape ne correspond à cette recherche.</p>`;
+
+const C = 2 * Math.PI * 8;
+tocList.innerHTML = GUIDE.map((c, i) => `<li><a href="#${c.id}" data-toc="${c.id}">
+  <span class="num">${String(i + 1).padStart(2, "0")}</span><span>${esc(c.title)}</span>
+  <svg class="ring" viewBox="0 0 22 22" aria-hidden="true"><circle class="bg" cx="11" cy="11" r="8"/><circle class="fg" cx="11" cy="11" r="8" stroke-dasharray="${C}" stroke-dashoffset="${C}"/></svg>
+</a></li>`).join("");
+
+/* Mise à jour de la progression : cases, anneaux, jauge, chapitres terminés. */
+const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function refresh(celebrate) {
+  document.querySelectorAll("[data-id]").forEach((cb) => {
+    cb.checked = done.has(cb.dataset.id);
+    cb.closest(".step").classList.toggle("checked", cb.checked);
+  });
+  GUIDE.forEach((c) => {
+    const n = c.steps.filter((_, j) => done.has(`${c.id}-${j}`)).length;
+    const ring = document.querySelector(`[data-toc="${c.id}"] .fg`);
+    ring.setAttribute("stroke-dashoffset", String(C * (1 - n / c.steps.length)));
+    const chip = document.querySelector(`#${c.id} [data-done-chip]`);
+    const complete = n === c.steps.length;
+    if (complete && chip.hidden && celebrate === c.id) cheer(`Parcours « ${c.title} » terminé`);
+    chip.hidden = !complete;
+  });
+  const pct = Math.round((done.size / total) * 100);
+  document.getElementById("pct").textContent = pct + " %";
+  document.getElementById("bar").style.width = pct + "%";
+  document.getElementById("count").textContent = `${done.size} étape${done.size > 1 ? "s" : ""} sur ${total}`;
+}
+document.addEventListener("change", (e) => {
+  const cb = e.target.closest("[data-id]");
+  if (!cb) return;
+  cb.checked ? done.add(cb.dataset.id) : done.delete(cb.dataset.id);
+  save();
+  refresh(cb.dataset.id.replace(/-\d+$/, ""));
+});
+let confirmReset = false;
+document.getElementById("reset").addEventListener("click", (e) => {
+  if (!confirmReset) { confirmReset = true; e.target.textContent = "Confirmer la remise à zéro ?"; setTimeout(() => { confirmReset = false; e.target.textContent = "Remettre ma progression à zéro"; }, 4000); return; }
+  confirmReset = false; e.target.textContent = "Remettre ma progression à zéro";
+  done.clear(); save(); refresh();
+});
+refresh();
+
+/* Félicitations : message et confettis aux couleurs de la page. */
+const toast = document.getElementById("toast");
+const canvas = document.getElementById("confetti");
+function cheer(msg) {
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2800);
+  if (calm) return;
+  const ctx = canvas.getContext("2d");
+  canvas.width = innerWidth; canvas.height = innerHeight;
+  const css = getComputedStyle(document.documentElement);
+  const colors = ["--brand", "--brand-2", "--tag", "--ok"].map((v) => css.getPropertyValue(v).trim());
+  const parts = Array.from({ length: 140 }, () => ({ x: innerWidth / 2, y: innerHeight * .75, vx: (Math.random() - .5) * 16, vy: -Math.random() * 16 - 6, r: Math.random() * 6 + 3, c: colors[Math.floor(Math.random() * colors.length)], a: Math.random() * 6 }));
+  let t = 0;
+  (function frame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    parts.forEach((p) => { p.vy += .45; p.x += p.vx; p.y += p.vy; p.a += .2; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); ctx.restore(); });
+    if (++t < 110) requestAnimationFrame(frame); else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  })();
+}
+
+/* Recherche : filtre les étapes, surligne les mots, masque les parcours sans résultat. */
+const q = document.getElementById("q");
+const originals = new Map();
+q.addEventListener("input", () => {
+  const term = q.value.trim().toLowerCase();
+  let any = false;
+  document.querySelectorAll(".chapter").forEach((ch) => {
+    let hits = 0;
+    ch.querySelectorAll(".step").forEach((st) => {
+      const body = st.querySelector(".body");
+      if (!originals.has(st)) originals.set(st, body.innerHTML);
+      body.innerHTML = originals.get(st);
+      const match = !term || st.dataset.text.includes(term);
+      st.hidden = !match;
+      if (match) hits++;
+      if (term && match) {
+        const re = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+        body.querySelectorAll("h3, p, li").forEach((el) => {
+          el.childNodes.forEach((node) => {
+            if (node.nodeType === 3 && re.test(node.textContent)) {
+              const span = document.createElement("span");
+              span.innerHTML = esc(node.textContent).replace(re, (m) => `<mark>${m}</mark>`);
+              node.replaceWith(span);
+            }
+            re.lastIndex = 0;
+          });
+        });
+      }
+    });
+    ch.hidden = term !== "" && hits === 0;
+    ch.querySelectorAll(".ch-shot, .pager").forEach((el) => (el.hidden = term !== ""));
+    if (hits) any = true;
+  });
+  document.getElementById("empty").hidden = any;
+  refresh();
+});
+
+/* Apparitions, sommaire actif, barre de lecture. */
+document.documentElement.classList.add("js");
+const reveals = [...document.querySelectorAll(".reveal")];
+if (calm || !("IntersectionObserver" in window)) reveals.forEach((el) => el.classList.add("in"));
+else {
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -6% 0px" });
+  reveals.forEach((el) => io.observe(el));
+  setTimeout(() => reveals.forEach((el) => el.classList.add("in")), 2500);
+}
+const tocLinks = [...document.querySelectorAll("[data-toc]")];
+if ("IntersectionObserver" in window) {
+  const so = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    tocLinks.forEach((a) => a.classList.toggle("active", a.dataset.toc === e.target.id));
+  }), { rootMargin: "-30% 0px -65% 0px" });
+  document.querySelectorAll(".chapter").forEach((s) => so.observe(s));
+}
+const bar = document.getElementById("progress-top");
+let ticking = false;
+addEventListener("scroll", () => {
+  if (ticking) return; ticking = true;
+  requestAnimationFrame(() => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    bar.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
+    ticking = false;
+  });
+}, { passive: true });
+
+/* Sommaire repliable sur petit écran. */
+const toc = document.getElementById("toc");
+document.getElementById("toc-toggle").addEventListener("click", (e) => {
+  const open = toc.classList.toggle("collapsed") === false;
+  e.currentTarget.setAttribute("aria-expanded", String(open));
+});
+tocLinks.forEach((a) => a.addEventListener("click", () => { if (innerWidth <= 980) { toc.classList.add("collapsed"); document.getElementById("toc-toggle").setAttribute("aria-expanded", "false"); } }));
+</script>
+</body>
+</html>
